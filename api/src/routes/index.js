@@ -80,7 +80,7 @@ router.get('/dogs' , async (req,res)=>{
             life_span : i.life_span,
             temperament : i.temperament,
             origin : i.origin,
-            reference_image_id : i.reference_image_id
+            reference_image_id : i.image.url
         }
     }))
 

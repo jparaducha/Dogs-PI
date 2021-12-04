@@ -1,10 +1,21 @@
 import './App.css';
+import { BrowserRouter , Route , Routes} from 'react-router-dom';
+import  Landing from './components/Landing';
+import Home from './components/Home';
+import Form from './components/Form';
 
 function App() {
   return (
-    <div className="App">
-      <h1>Henry Dogs</h1>
-    </div>
+    <BrowserRouter>
+    <Routes>
+
+    <Route path='/' element={<Landing/>}/>
+    <Route path='/Home' element={<Home/>}/>
+    <Route path='/Form' element={<Form/>}/>
+
+    </Routes>
+    
+    </BrowserRouter>
   );
 }
 
