@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import Nav from './Nav';
-import { getDogs } from '../actions';
+import { getDogs, getTemperament } from '../actions';
 import { useDispatch} from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -10,6 +10,7 @@ const Landing = function(){
 
     useEffect(()=>{
      dispatch(getDogs());
+     dispatch(getTemperament());
     }, [])
     return(
         <div>

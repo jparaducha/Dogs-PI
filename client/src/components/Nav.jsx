@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Home from './Home';
-import Form from './Form';
+// import Home from './Home';
+// import Form from './Form';
 
 const Nav =function(){
     return(

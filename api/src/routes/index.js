@@ -14,7 +14,9 @@ const router = Router();
 async function getDbInfo(name){
     if(!name)
     {
-         return await Dog.findAll()
+         return await Dog.findAll({
+             include : Temperament
+         })
     }else
     {
         return await Dog.findAll({
@@ -44,8 +46,14 @@ var getDBbyUUID = async function(id){
 }
 
 
-async function getDbTemperaments(){
-    return await Temperament.findAll();
+async function getDbTemperaments(temperaments){
+    return await Temperament.findAll({
+        where : {
+            name : {
+                [Op.iLike] : temperaments
+            }
+        }
+    });
 }
 
 router.get('/dogs' , async (req,res)=>{
@@ -80,7 +88,7 @@ router.get('/dogs' , async (req,res)=>{
             life_span : i.life_span,
             temperament : i.temperament,
             origin : i.origin,
-            reference_image_id : i.image.url
+            reference_image_id : i.image.url || undefined
         }
     }))
 
@@ -90,7 +98,23 @@ router.get('/dogs' , async (req,res)=>{
 
     arrayDB = await getDbInfo();
 
+    // arrayDB[0] ? console.log('arrayDB rutas: ', arrayDB.map(i=>i)): null;
     info = arrayDB.concat(arrayDogs);
+
+
+    // console.log('info slice map : ', info.slice(0,5).map(i=> {
+    //     if(i.dog){
+    //         return i.dog.dataValues.map(j =>{
+    //             if(j===temperaments){
+    //                 return j.map(k=> k.name);
+    //             }else{
+    //                 return j;
+    //             }
+    //         })
+    //     }
+
+    //     return i;
+    // }));
     info ? res.send(info): res.send(404);
 })
 
@@ -120,7 +144,7 @@ router.get('/dogs/:id', async (req,res)=>{
             reference_image_id : i.reference_image_id
         }
     }))
-    console.log('id !!', id);
+    // console.log('id !!', id);
     // console.log('dog de api: ', DogFromAPI.filter(i => i.id==id));
 
     var DogFromAPI = DogsFromAPI.filter(i => i.id==id);
@@ -133,7 +157,7 @@ router.get('/dogs/:id', async (req,res)=>{
     }
 
     }else{
-       var dogFromDB = await getDBbyUUID(id);
+       var dogFromDB =[await getDBbyUUID(id)];
 
        return res.json(dogFromDB);
     }
@@ -197,6 +221,7 @@ router.get('/temperament', async (req,res)=>{
 
 router.post('/dog', async (req,res)=>{
 
+    try{
     const { name, bred_for, breed_group, life_span, temperament, origin , weight , height} = req.body;
 
     var newDog = {
@@ -216,14 +241,80 @@ router.post('/dog', async (req,res)=>{
             name : temperament
         }
     })
+    // var data;
+    // temperamentsDB =  await getDbTemperaments(temperament)
+    // .then(r=>{
+    //     data = r.data;
+    // })
 
-    createdDog.addTemperaments(temperamentsDB);
 
-    console.log('perro creado: ', createdDog.dataValues);
-
-    res.sendStatus(200);
+    createdDog.addTemperaments(temperamentsDB)
 
 
+    // console.log('temperaments db : ', temperamentsDB.map(i => i.name));
+
+    // console.log('perro creado: ', createdDog.dataValues.name);
+    // console.log('temperamentos add:', temperamentsDB.map(i => i.dataValues.name), 'temperaments de body: ', temperament);
+
+    res.status(200).send(`Raza ${name} creada`);;
+}
+catch(e){
+    res.status(401).send(e);
+}
+
+})
+
+router.delete('/dogs/:id', async (req,res)=>{
+    const {id} = req.params;
+
+    await Dog.destroy({
+        where : {
+            uuid : id
+        }
+    })
+
+
+    res.status(200).send('Raza destruida');
+})
+
+router.put('/update/:id', async (req,res)=>{
+
+    const {id} = req.params;
+try{
+
+    console.log('dentro del try put id : ', id);
+
+    const { name, bred_for, breed_group, life_span, temperament, origin , weight , height} = req.body;
+
+    var perroDB = await Dog.findOne({
+        where : {
+            uuid : id
+        }
+    });
+
+    console.log('perrodB : ', perroDB.name);
+
+    let newObj= {}
+
+    if(name) newObj.name = name;
+    if(bred_for) newObj.bred_for = bred_for;
+    if(breed_group) newObj.breed_group = breed_group;
+    if(life_span) newObj.life_span = life_span;
+    if(temperament) newObj.temperament = temperament;
+    if(origin) newObj.origin = origin;
+    if(weight) newObj.weight = weight;
+    if(height) newObj.height = height;
+
+    await perroDB.update(newObj)
+
+    console.log('perroDB name depsués del update:', perroDB.name)
+
+    await perroDB.save();
+
+    res.status(200).send('Perro actualizado');
+}catch(e){
+    res.status(400).send(e);
+}
 
 })
 
