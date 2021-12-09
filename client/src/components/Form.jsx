@@ -2,6 +2,7 @@ import React, { useState} from "react";
 import {Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { addDog, getDogs } from "../actions";
+import backgroundInfo from './backgroundInfo.jpg';
 
 const Form = function(){
 
@@ -13,6 +14,39 @@ const Form = function(){
     const [input, setInput] = useState({});
     const [errors, setErrors] = useState({});
     const [temperamentsInput, setTemperamentsInput] = useState([]);
+
+    var styles = {
+      div1 : {
+        display:'flex',
+        flexFlow:'column',
+        justifyContent:'center',
+        alignItems:'center',
+        backgroundImage : `url(${backgroundInfo})`,
+        minHeight : '99vh',
+      },
+      form : {
+        display:'flex',
+        justifyContent:'center',
+        flexWrap:'wrap',
+        alignItems:'center',
+        maxWidth:'78vw',
+        backgroundColor : 'rgba(155,155,155,0.9)',
+        padding : '30px',
+        border : '3px solid blue',
+        borderRadius : '15px',
+      },
+      inputField : {
+        border : '1px solid slateblue',
+        borderRadius : '1px'
+      },
+      link : {
+        textDecoration : 'none',
+        fontSize : '7vh',
+        fontFamily : 'Courier New',
+        fontWeight : '700',
+        textShadow : '2px 2px 0 black',
+      }
+    }
 
 
     // var payload = {
@@ -85,14 +119,12 @@ const Form = function(){
         }else if(!/^[a-zA-Z\s]*$/.test(input.name)){
           errors.name = 'Nombre no válido';
         }
-        if(!input.weight){
-          errors.weight = 'Se necesita un peso';
-        }else if(!/^(0?[1-9]|[1-9][0-9])$/.test(input.weight)){
-          errors.weight = 'El peso debe estar entre 1 y 99';
-        }
-        if(input.weight===''){
+        if(!Object.keys(input).includes('weight')){
           delete errors.weight;
-        }
+        }else {
+          if(!/^(0?[1-9]|[1-9][0-9])$/.test(input.weight)){
+          errors.weight = 'El peso debe estar entre 1 y 99';
+        }} 
         if(input.name===''){
           delete errors.name;
         }
@@ -101,11 +133,10 @@ const Form = function(){
       }
 
     return(
-        <div style={{display:'flex', flexFlow:'column', justifyContent:'center', alignItems:'center'}}>
-            <h1>esta es la página de form</h1>
-            <Link to='/home'>volver a home</Link>
+        <div style={styles.div1}>
+          
             
-            <form style={{display:'flex', justifyContent:'center', flexWrap:'wrap', alignItems:'center' , maxWidth:'78vw'}} onSubmit={(e)=> handleInputSubmit(e)}>
+            <form style={styles.form} onSubmit={(e)=> handleInputSubmit(e)}>
 
             <div style={{margin:'10px'}}>
             <label for='name' style={{margin:'2px'}}>Nombre</label>
@@ -115,34 +146,34 @@ const Form = function(){
 
             <div style={{margin:'10px'}}>
             <label for='bred_for' style={{margin:'5px'}}>Criado para</label>
-            <input type='text' value={input.bred_for} name='bred_for' id='bred_for' onChange={(e)=> handleInputChange(e)}/>
+            <input style={styles.inputField} type='text' value={input.bred_for} name='bred_for' id='bred_for' onChange={(e)=> handleInputChange(e)}/>
             </div>
 
             
             <div style={{margin:'10px'}}>
             <label for='breed_group' style={{margin:'5px'}}>Grupo de crianza</label>
-            <input type='text' value={input.breed_group} name='breed_group' id='breed_group' onChange={(e)=> handleInputChange(e)}/>
+            <input  style={styles.inputField} type='text' value={input.breed_group} name='breed_group' id='breed_group' onChange={(e)=> handleInputChange(e)}/>
             </div>
 
             <div style={{margin:'10px'}}>
             <label for='life_span' style={{margin:'5px'}}>Expectativa de vida</label>
-            <input type='text' value={input.life_span} name='life_span' id='life_span' onChange={(e)=> handleInputChange(e)}/>
+            <input  style={styles.inputField} type='text' value={input.life_span} name='life_span' id='life_span' onChange={(e)=> handleInputChange(e)}/>
             </div>
 
             <div style={{margin:'10px'}}>
             <label for='origin' style={{margin:'5px'}}>Origen</label>
-            <input type='text' value={input.origin} name='origin' id='origin' onChange={(e)=> handleInputChange(e)}/>
+            <input  style={styles.inputField} type='text' value={input.origin} name='origin' id='origin' onChange={(e)=> handleInputChange(e)}/>
             </div>
 
             <div style={{margin:'10px'}}>
             <label for='weight' style={{margin:'5px'}}>Peso</label>
-            <input type='text' value={input.weight} name='weight' id='weight' min={0} max={99} onChange={(e)=> handleInputChange(e)}/>
+            <input  style={styles.inputField} type='text' value={input.weight} name='weight' id='weight' min={0} max={99} onChange={(e)=> handleInputChange(e)}/>
             </div>
             {errors.weight && <p>{errors.weight}</p>}
 
             <div style={{margin:'10px'}}>
             <label for='height' style={{margin:'5px'}}>Altura</label>
-            <input type='number' value={input.height}  name='height' id='height' min={0} max={150} onChange={(e)=> handleInputChange(e)}/>
+            <input  style={styles.inputField} type='number' value={input.height}  name='height' id='height' min={0} max={150} onChange={(e)=> handleInputChange(e)}/>
             </div>
 
 
@@ -168,7 +199,8 @@ const Form = function(){
             <div style={{
             display:'flex',
             justifyContent:'center',
-            flexFlow : 'column',
+            flexFlow : 'row',
+            flexWrap : 'wrap',
             margin : '4px'}}>
             {temperamentosRedux.map((i,idx)=>{
                 return(
@@ -188,9 +220,13 @@ const Form = function(){
             })}
             </div>
 
-            <input type='button' value='agregar perro' disabled={Object.keys(errors).length || !input.name || !input.weight} onClick={(e)=>handleInputSubmit(e)}/>
+            <input type='button' value='Agregar perro' disabled={Object.keys(errors).length || !input.name || !input.weight} onClick={(e)=>handleInputSubmit(e)}/>
             
             </form>
+
+
+            
+            <Link style={styles.link} to='/home'>Volver a home</Link>
         </div>
     )
 }

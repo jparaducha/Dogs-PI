@@ -180,7 +180,7 @@ router.get('/temperament', async (req,res)=>{
     }))
 
 
-    var temperamentList = [];
+    var temperamentList = ['All'];
     temperamentStrings.forEach((i)=>{
 
         var temperamentSplit = i.temperament ? i.temperament.split(', '): [];
@@ -222,7 +222,41 @@ router.get('/temperament', async (req,res)=>{
 router.post('/dog', async (req,res)=>{
 
     try{
-    const { name, bred_for, breed_group, life_span, temperament, origin , weight , height} = req.body;
+    const {id , name, bred_for, breed_group, life_span, temperament, origin , weight , height} = req.body;
+
+    console.log('el post recibe :', req.body);
+
+    // if(id){
+
+    //     try{
+
+    //     console.log('dentro del if id del post');
+    //     var existingDog  = await Dog.findByPk(id);
+    //     var emptyDog = {};
+    //     if(name) emptyDog.name = name;
+    //     if(bred_for) emptyDog.bred_for = bred_for;
+    //     if(breed_group) emptyDog.breed_group = breed_group;
+    //     if(life_span) emptyDog.life_span = life_span;
+    //     if(temperament) emptyDog.temperament = temperament;
+    //     if(origin) emptyDog.origin = origin;
+    //     if(weight) emptyDog.weight = weight;
+    //     if(height) emptyDog.height = height;
+
+    //     console.log('va a hacer update con :', emptyDog);
+
+    //     if(existingDog) await Dog.update({
+    //         emptyDog,
+    //         where : {
+    //             uuid : id
+    //         }
+    //     })
+
+    //     res.status(200).send('updated');}
+    //     catch(e){
+    //         console.log(e);
+    //     }
+    // }
+
 
     var newDog = {
         name,
@@ -277,14 +311,14 @@ router.delete('/dogs/:id', async (req,res)=>{
     res.status(200).send('Raza destruida');
 })
 
-router.put('/update/:id', async (req,res)=>{
+router.put('/dog', async (req,res)=>{
 
-    const {id} = req.params;
+    // const {id} = req.params;
 try{
 
     console.log('dentro del try put id : ', id);
 
-    const { name, bred_for, breed_group, life_span, temperament, origin , weight , height} = req.body;
+    const { id, name, bred_for, breed_group, life_span, temperament, origin , weight , height} = req.body;
 
     var perroDB = await Dog.findOne({
         where : {

@@ -57,6 +57,20 @@ export const addDog = function(payload){
     }
 }
 
+export const updateById = function(payload){
+
+    return async function(dispatch){
+
+        console.log('dentro de actions post con payload:', payload);
+        await axios.post(`http://localhost:3001/dog`, payload);
+
+        return dispatch({
+            type: UPDATE_DOG,
+            payload
+        })
+    }
+}
+
 export const orderA_Z = function(payload){
     return async function(dispatch){
         dispatch({
@@ -106,18 +120,6 @@ export const deleteById = function(payload){
     }
 }
 
-export const updateById = function(payload){
-
-    return async function(dispatch){
-
-        await axios.put(`http://localhost:3001/update/${payload.id}`, payload);
-
-        dispatch({
-            type: UPDATE_DOG,
-            payload
-        })
-    }
-}
 
 export const filterByBreed = function(payload){
 

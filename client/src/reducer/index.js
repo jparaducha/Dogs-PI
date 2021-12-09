@@ -34,12 +34,12 @@ const rootReducer = function(state = initialState,{type, payload}){
         case ORDER_AZ: 
                         return{
                             ...state,
-                            selectedDogs : state.selectedDogs.sort((a,b)=> a.name> b.name ? 1: -1)
+                            selectedDogs : state.selectedDogs.sort((a,b)=> a.name.toLowerCase()> b.name.toLowerCase() ? 1: -1)
                         }
         case ORDER_ZA:
                         return{
                             ...state,
-                            selectedDogs : state.selectedDogs.sort((a,b)=> a.name>b.name ? -1 : 1)
+                            selectedDogs : state.selectedDogs.sort((a,b)=> a.name.toLowerCase()>b.name.toLowerCase() ? -1 : 1)
                         }
         case GET_TEMPERAMENT:
                         return{
@@ -49,11 +49,17 @@ const rootReducer = function(state = initialState,{type, payload}){
         case FILTER_BY_TEMPERAMENT:
                         return{
                             ...state,
-                            selectedDogs : state.allDogs.filter(i =>{
+                            selectedDogs :payload ==='All'? state.allDogs : state.allDogs.filter(i =>{
 
                                 let flag = false;
                                 if(typeof i.temperament=== 'string'){
                                     if(i.temperament.includes(payload)){
+                                        flag = true;
+                                    }
+                                }
+
+                                if(i.temperaments){
+                                    if(i.temperaments.map(i => i.name).includes(payload)){
                                         flag = true;
                                     }
                                 }

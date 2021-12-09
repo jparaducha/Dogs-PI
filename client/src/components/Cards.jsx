@@ -5,6 +5,7 @@ import {useSelector, useDispatch} from 'react-redux'
 // import { ORDER_AZ } from "../actions/constants";
 import pawR from './pawR.png';
 import pawL from './pawL.png';
+import backgroundImg from './backgroundImg.png';
 // import { getDogs } from "../actions";
 
 const Cards = function(){
@@ -20,6 +21,7 @@ const Cards = function(){
 
     
     var dogs = useSelector((state)=>state.selectedDogs);
+    var temperamentsRedux = useSelector((state)=>state.temperaments);
 
     useEffect(() => {
         setFiltered(dogs.slice(actualPage,actualPage+9));
@@ -47,14 +49,15 @@ const Cards = function(){
             justifyContent : 'center',
             alignItems : 'center',
             flexWrap : 'wrap',
-            backgroundColor : 'red',
+            // backgroundColor : 'red',
+            backgroundImage : `url(${backgroundImg})`
         },
         buttons : {
             display: 'flex',
             justifyContent : 'space-around',
             alignItems: 'center',
             margin : '40px',
-            backgroundColor : 'pink',
+            backgroundColor : 'rgba(90,150,143,0.8)',
             minWidth : '98vw',
         }
     }
@@ -62,12 +65,16 @@ const Cards = function(){
     var handleOrderAZ = function(e){
         e.preventDefault();
         dispatch(orderA_Z());
+        // setCurrentPage(0);
+        // setActualPage(1);
         setFiltered(filteredDogs());
     }
 
     function handleOrderZA(e){
         e.preventDefault();
         dispatch(orderZ_A());
+        // setCurrentPage(0);
+        // setActualPage(1);
         setFiltered(filteredDogs());
     }
 
@@ -230,10 +237,24 @@ const Cards = function(){
             </form>
 
             <div style={{margin: '10px'}}>
-            <form onSubmit={(e)=>handleTemperamentFilter(e)}>
+            {/* <form onSubmit={(e)=>handleTemperamentFilter(e)}>
             <input type='text' id='temperamentFilter' value={temperamento} onChange={(e)=>handleTemperamentChange(e)}/>
             <label id='temperamentFilter'>Filtrar por temperamento</label>
+            </form> */}
+
+            <form action={(e)=>handleTemperamentFilter(e)} onChange={(e)=>handleTemperamentChange(e)}>
+            <label for='temperamentFilter'>Filtrar por temperamento</label>
+            <select name='temperamentos' id='temperamentList'>
+
+                {
+                    temperamentsRedux? temperamentsRedux.map(i => <option key={i.id} value={i.name} name={i.name} onClick={(e)=>handleTemperamentChange(e)}>{i.name}</option>) : null
+                }
+            </select>
+            <button type='submit' onClick={(e)=>handleTemperamentFilter(e)}>Filtrar por temperamento</button>
+
             </form>
+
+
             </div>
 
             {/* <form>
